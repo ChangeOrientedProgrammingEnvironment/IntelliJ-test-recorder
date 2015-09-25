@@ -26,6 +26,7 @@
 
   <extensions defaultExtensionNs="com.intellij">
     <!-- Add your extensions here -->
+    <testStatusListener implementation="edu.oregonstate.cope.intellijListener.listeners.TestListener">  </testStatusListener>
   </extensions>
 
   <application-components>
