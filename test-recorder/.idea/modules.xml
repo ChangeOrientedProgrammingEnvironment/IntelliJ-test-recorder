@@ -2,6 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/Maven-Dependencies/Maven-Dependencies.iml" filepath="$PROJECT_DIR$/Maven-Dependencies/Maven-Dependencies.iml" />
       <module fileurl="file://$PROJECT_DIR$/test-recorder.iml" filepath="$PROJECT_DIR$/test-recorder.iml" />
     </modules>
   </component>

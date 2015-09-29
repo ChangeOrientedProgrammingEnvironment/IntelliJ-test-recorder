@@ -3,6 +3,8 @@ package edu.oregonstate.cope.intellijListener.listeners;
 import com.intellij.execution.testframework.AbstractTestProxy;
 import com.intellij.execution.testframework.TestStatusListener;
 
+import static edu.oregonstate.cope.intellijListener.listeners.RESTInterface.sampleRESTCall;
+
 
 /**
  * Created by mihai on 4/8/14.
@@ -52,6 +54,7 @@ public class TestListener extends TestStatusListener {
 
 //			recordTestRun(test);
 			System.out.println("TEST RUN");
+			sampleRESTCall();
 		}
 	}
 
