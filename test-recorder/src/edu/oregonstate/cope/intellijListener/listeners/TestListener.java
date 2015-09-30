@@ -1,7 +1,16 @@
 package edu.oregonstate.cope.intellijListener.listeners;
 
+import com.intellij.execution.Location;
+import com.intellij.execution.junit2.info.MethodLocation;
 import com.intellij.execution.testframework.AbstractTestProxy;
 import com.intellij.execution.testframework.TestStatusListener;
+import com.intellij.openapi.project.Project;
+import com.intellij.openapi.project.ProjectManager;
+import com.intellij.psi.PsiClass;
+import com.intellij.psi.search.GlobalSearchScope;
+import com.intellij.rt.execution.junit.states.PoolOfTestStates;
+
+import org.json.simple.JSONObject;
 
 import static edu.oregonstate.cope.intellijListener.listeners.RESTInterface.sampleRESTCall;
 
@@ -11,122 +20,140 @@ import static edu.oregonstate.cope.intellijListener.listeners.RESTInterface.samp
  */
 public class TestListener extends TestStatusListener {
 
-	//copy paste from org.eclipse.jdt.junit.model.ITestElement.Result
-	public static final class Result {
-		/**
-		 * state that describes that the test result is undefined
-		 */
-		public static final Result UNDEFINED = new Result("Undefined"); //$NON-NLS-1$
-		/**
-		 * state that describes that the test result is 'OK'
-		 */
-		public static final Result OK = new Result("OK"); //$NON-NLS-1$
-		/**
-		 * state that describes that the test result is 'Error'
-		 */
-		public static final Result ERROR = new Result("Error"); //$NON-NLS-1$
-		/**
-		 * state that describes that the test result is 'Failure'
-		 */
-		public static final Result FAILURE = new Result("Failure"); //$NON-NLS-1$
-		/**
-		 * state that describes that the test result is 'Ignored'
-		 */
-		public static final Result IGNORED = new Result("Ignored"); //$NON-NLS-1$
+    //copy paste from org.eclipse.jdt.junit.model.ITestElement.Result
+    public static final class Result {
+        /**
+         * state that describes that the test result is undefined
+         */
+        public static final Result UNDEFINED = new Result("Undefined"); //$NON-NLS-1$
+        /**
+         * state that describes that the test result is 'OK'
+         */
+        public static final Result OK = new Result("OK"); //$NON-NLS-1$
+        /**
+         * state that describes that the test result is 'Error'
+         */
+        public static final Result ERROR = new Result("Error"); //$NON-NLS-1$
+        /**
+         * state that describes that the test result is 'Failure'
+         */
+        public static final Result FAILURE = new Result("Failure"); //$NON-NLS-1$
+        /**
+         * state that describes that the test result is 'Ignored'
+         */
+        public static final Result IGNORED = new Result("Ignored"); //$NON-NLS-1$
 
-		private String fName;
+        private String fName;
 
-		private Result(String name) {
-			fName = name;
-		}
+        private Result(String name) {
+            fName = name;
+        }
 
-		public String toString() {
-			return fName;
-		}
-	}
+        public String toString() {
+            return fName;
+        }
+    }
 
-	@Override
-	public void testSuiteFinished(AbstractTestProxy root) {
-		for (AbstractTestProxy test : root.getAllTests()) {
-			if (!test.isLeaf()) {
-				continue;
-			}
+    @Override
+    public void testSuiteFinished(AbstractTestProxy root) {
+        for (AbstractTestProxy test : root.getAllTests()) {
+            if (!test.isLeaf()) {
+                continue;
+            }
+            System.out.println("TEST RUN");
 
-//			recordTestRun(test);
-			System.out.println("TEST RUN");
-			sampleRESTCall();
-		}
-	}
+            Project project = getProject(test);
 
-//	private void recordTestRun(AbstractTestProxy test) {
-//		Project project = getProject(test);
-//
-//        if (project == null){
-//            return;
-//        }
-//
-//        COPEComponent copeComponent = project.getComponent(COPEComponent.class);
-//        LoggerInterface logger = copeComponent.getRecorder().getLogger();
-//
-//        String qualifiedTestName = constructQualifiedName(test, project, logger);
-//        Result testResult = computeTestResult(test, logger);
-//        Double testTime = getTestTimeInSeconds(test);
-//
-//		copeComponent.getRecorder().getClientRecorder().recordTestRun(qualifiedTestName, testResult.toString(), testTime);
-//	}
+            if (project == null) {
+                return;
+            }
+            String qualifiedTestName = constructQualifiedName(test, project);
+            Result testResult = computeTestResult(test);
+            Double testTime = getTestTimeInSeconds(test);
+            JSONObject testJSON = null;
+            try {
+                testJSON = buildTestEventJSON(qualifiedTestName, testResult.toString(), testTime);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
 
-//	private Double getTestTimeInSeconds(AbstractTestProxy test) {
-//		return test.getDuration() / 1000.0;
-//	}
 
-//	private String constructQualifiedName(AbstractTestProxy test, Project project, LoggerInterface logger) {
-//		Location location = getLocation(test, project);
-//
-//		if (location instanceof MethodLocation) {
-//			MethodLocation methodLocation = (MethodLocation) location;
-//			PsiClass testClass = methodLocation.getContainingClass();
-//
-//			return testClass.getQualifiedName() + "." + methodLocation.getPsiElement().getName();
-//		}
-//
-//        logger.error(this, "Test location is not a MethodLocation: " + location.getClass() + ". Test: " + test.getName());
-//		return null;
-//	}
+            sampleRESTCall(testJSON);
+        }
+    }
 
-//	private Project getProject(AbstractTestProxy test) {
-//		Project[] openProjects = ProjectManager.getInstance().getOpenProjects();
-//
-//		for (Project openedProject : openProjects) {
-//			Location location = getLocation(test, openedProject);
-//
-//			if (location != null) {
-//				return openedProject;
-//			}
-//		}
-//
-//		return null;
-//	}
+    private Double getTestTimeInSeconds(AbstractTestProxy test) {
+        return test.getDuration() / 1000.0;
+    }
 
-//	private Location getLocation(AbstractTestProxy test, Project project) {
-//		return test.getLocation(project, GlobalSearchScope.allScope(project));
-//	}
+    private String constructQualifiedName(AbstractTestProxy test, Project project) {
+        Location location = getLocation(test, project);
 
-//	private Result computeTestResult(AbstractTestProxy test, LoggerInterface logger) {
-//		if (test.isPassed()) {
-//			return Result.OK;
-//		}
-//
-//		int testMagnitude = test.getMagnitude();
-//
-//		if (testMagnitude == PoolOfTestStates.ERROR_INDEX) {
-//			return Result.ERROR;
-//		}
-//
-//		if (testMagnitude == PoolOfTestStates.FAILED_INDEX || testMagnitude == PoolOfTestStates.COMPARISON_FAILURE) {
-//			return Result.FAILURE;
-//		}
-//
-//        logger.error(this, "Undefined test state: " + testMagnitude + ". Test: " + test.getName());
-//		return Result.UNDEFINED;
-//	}
+        if (location instanceof MethodLocation) {
+            MethodLocation methodLocation = (MethodLocation) location;
+            PsiClass testClass = methodLocation.getContainingClass();
+
+            return testClass.getQualifiedName() + "." + methodLocation.getPsiElement().getName();
+        }
+        return null;
+    }
+
+    private Project getProject(AbstractTestProxy test) {
+        Project[] openProjects = ProjectManager.getInstance().getOpenProjects();
+
+        for (Project openedProject : openProjects) {
+            Location location = getLocation(test, openedProject);
+
+            if (location != null) {
+                return openedProject;
+            }
+        }
+
+        return null;
+    }
+
+    private Location getLocation(AbstractTestProxy test, Project project) {
+        return test.getLocation(project, GlobalSearchScope.allScope(project));
+    }
+
+    private Result computeTestResult(AbstractTestProxy test) {
+        if (test.isPassed()) {
+            return Result.OK;
+        }
+
+        int testMagnitude = test.getMagnitude();
+
+        if (testMagnitude == PoolOfTestStates.ERROR_INDEX) {
+            return Result.ERROR;
+        }
+
+        if (testMagnitude == PoolOfTestStates.FAILED_INDEX || testMagnitude == PoolOfTestStates.COMPARISON_FAILURE) {
+            return Result.FAILURE;
+        }
+       return Result.UNDEFINED;
+    }
+
+    protected JSONObject buildCommonJSONObj(Enum eventType) {
+        JSONObject obj;
+        obj = new JSONObject();
+        obj.put(JSONConstants.JSON_IDE, "INTEILLIJ");
+        obj.put(JSONConstants.JSON_EVENT_TYPE, eventType.toString());
+        obj.put(JSONConstants.JSON_TIMESTAMP, System.currentTimeMillis() + "");
+
+        return obj;
+    }
+
+    protected JSONObject buildTestEventJSON(String fullyQualifiedTestMethod, String testResult, double elapsedTime) throws Exception {
+        if (fullyQualifiedTestMethod == null || testResult == null)
+            throw new Exception("Arguments cannot be null");
+        if (fullyQualifiedTestMethod.isEmpty() || testResult.isEmpty())
+            throw new Exception("Arguments cannot be empty");
+
+        JSONObject obj = buildCommonJSONObj(Events.testRun);
+        obj.put(JSONConstants.JSON_ENTITY_ADDRESS, fullyQualifiedTestMethod);
+        obj.put(JSONConstants.JSON_TEST_RESULT, testResult);
+        obj.put(JSONConstants.JSON_TEST_ELAPSED_TIME, elapsedTime);
+
+        return obj;
+    }
 }

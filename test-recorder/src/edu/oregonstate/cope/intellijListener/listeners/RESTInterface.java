@@ -12,6 +12,7 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
+import org.json.simple.JSONObject;
 
 import java.io.*;
 import java.net.MalformedURLException;
@@ -21,7 +22,7 @@ import java.net.MalformedURLException;
  */
 public class RESTInterface {
 
-    public static void sampleRESTCall(){
+    public static void sampleRESTCall(JSONObject testJSON){
 
 
 
@@ -29,7 +30,7 @@ public class RESTInterface {
         try {
             HttpPost httppost = new HttpPost("http://localhost:3000/loopback/testPost");
 
-            StringEntity input = new StringEntity("{\"qty\":100,\"name\":\"iPad 4\"}");
+            StringEntity input = new StringEntity(testJSON.toString());
             input.setContentType("application/json");
             httppost.setEntity(input);
 
