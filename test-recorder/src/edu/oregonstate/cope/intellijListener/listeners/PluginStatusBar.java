@@ -68,7 +68,8 @@ public class PluginStatusBar implements StatusBarWidget, StatusBarWidget.IconPre
         if(updateReady) {
             return new Consumer<MouseEvent>() {
                 public void consume(MouseEvent mouseEvent) {
-                    Messages.showMessageDialog("Your version of COPE is out of date.  Please update your plugin!", "COPE", Messages.getInformationIcon());
+                    String updateMessage = "Your version of COPE is out of date.  Please update your plugin!";
+                    Messages.showMessageDialog(updateMessage, "COPE", Messages.getInformationIcon());
                 }
             };
         }else{
