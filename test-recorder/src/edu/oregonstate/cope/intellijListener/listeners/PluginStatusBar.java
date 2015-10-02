@@ -17,6 +17,8 @@ import java.awt.event.MouseEvent;
 public class PluginStatusBar implements StatusBarWidget, StatusBarWidget.IconPresentation {
 
     private final Boolean updateReady;
+    private static final Icon PLUGIN_NOUPDATES_ICON = IconLoader.getIcon("/resources/cope_logo.png");
+    private static final Icon PLUGIN_UPDATES_ICON = IconLoader.getIcon("/resources/cope_logo_updates.png");
 
     public PluginStatusBar(Boolean updateReady) {
         this.updateReady = updateReady;
@@ -30,12 +32,10 @@ public class PluginStatusBar implements StatusBarWidget, StatusBarWidget.IconPre
     @NotNull
     @Override
     public Icon getIcon() {
-        if(updateReady){
-            Icon test = IconLoader.getIcon("/resources/cope_logo_updates.png");
-            return test;
-        }else{
-            Icon test = IconLoader.getIcon("/resources/cope_logo.png");
-            return test;
+        if(updateReady) {
+            return PLUGIN_UPDATES_ICON;
+        } else {
+            return PLUGIN_NOUPDATES_ICON;
         }
     }
 
