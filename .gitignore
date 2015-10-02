@@ -1,4 +1,14 @@
 
+out/
+.idea/workspace.xml
+.idea/tasks.xml
+.idea/libraries/*.xml
+
+test-recorder/out/
 test-recorder/.idea/workspace.xml
+test-recorder/.idea/tasks.xml
+test-recorder/.idea/libraries/*.xml
+
+
 test-recorder/out/production/test-recorder/edu/oregonstate/cope/intellijListener/listeners/TestListener$Result.class
 test-recorder/out/production/test-recorder/edu/oregonstate/cope/intellijListener/listeners/TestListener.class
