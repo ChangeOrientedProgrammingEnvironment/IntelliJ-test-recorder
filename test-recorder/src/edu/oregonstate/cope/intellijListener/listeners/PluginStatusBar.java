@@ -31,10 +31,10 @@ public class PluginStatusBar implements StatusBarWidget, StatusBarWidget.IconPre
     @Override
     public Icon getIcon() {
         if(updateReady){
-            Icon test = IconLoader.getIcon("copeLogo_UpdateReady.png");
+            Icon test = IconLoader.getIcon("/resources/cope_logo_updates.png");
             return test;
         }else{
-            Icon test = IconLoader.getIcon("copeLogo.png");
+            Icon test = IconLoader.getIcon("/resources/cope_logo.png");
             return test;
         }
     }
