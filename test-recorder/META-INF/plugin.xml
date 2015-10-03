@@ -26,7 +26,8 @@
 
   <extensions defaultExtensionNs="com.intellij">
     <!-- Add your extensions here -->
-    <testStatusListener implementation="edu.oregonstate.cope.intellijListener.listeners.TestListener">  </testStatusListener>
+      <stepsBeforeRunProvider implementation="edu.oregonstate.cope.intellijListener.listeners.COPEBeforeRunTaskProvider"></stepsBeforeRunProvider>
+      <testStatusListener implementation="edu.oregonstate.cope.intellijListener.listeners.TestListener"/>
   </extensions>
 
   <application-components>
