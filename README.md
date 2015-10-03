@@ -1,2 +1,2 @@
 # IntelliJ-test-recorder
-simple recorder to for test runs and results
+IntelliJ IDEA plugin that records Test and Run executions within the IDE.
