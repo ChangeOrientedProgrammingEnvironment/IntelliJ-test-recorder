@@ -18,6 +18,19 @@ import java.io.*;
  */
 public class RESTInterface {
 
+    public static String testConnection(String url) throws IOException {
+        HttpPost httppost = new HttpPost(url);
+        try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
+            JSONObject jsonObject = TestListener.buildCommonJSONObj(Events.testConnection);
+            StringEntity input = new StringEntity(jsonObject.toString());
+            input.setContentType("application/json");
+            httppost.setEntity(input);
+            try (CloseableHttpResponse response = httpClient.execute(httppost)) {
+                return response.getStatusLine().toString();
+            }
+        }
+    }
+
     public static void sampleRESTCall(JSONObject testJSON){
 
 

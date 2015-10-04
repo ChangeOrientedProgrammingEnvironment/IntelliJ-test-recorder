@@ -133,7 +133,7 @@ public class TestListener extends TestStatusListener {
        return Result.UNDEFINED;
     }
 
-    protected JSONObject buildCommonJSONObj(Enum eventType) {
+    protected static JSONObject buildCommonJSONObj(Enum eventType) {
         JSONObject obj;
         obj = new JSONObject();
         obj.put(JSONConstants.JSON_IDE, "INTEILLIJ");
