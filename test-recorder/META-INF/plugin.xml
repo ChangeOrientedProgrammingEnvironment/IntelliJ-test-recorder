@@ -26,8 +26,10 @@
 
   <extensions defaultExtensionNs="com.intellij">
     <!-- Add your extensions here -->
-      <stepsBeforeRunProvider implementation="edu.oregonstate.cope.intellijListener.listeners.COPEBeforeRunTaskProvider"></stepsBeforeRunProvider>
-      <testStatusListener implementation="edu.oregonstate.cope.intellijListener.listeners.TestListener"/>
+    <testStatusListener implementation="edu.oregonstate.cope.intellijListener.listeners.TestListener">  </testStatusListener>
+    <applicationService serviceInterface="edu.oregonstate.cope.settings.CopeGlobalSettings"
+                        serviceImplementation="edu.oregonstate.cope.settings.CopeGlobalSettings"/>
+    <applicationConfigurable instance="edu.oregonstate.cope.settings.CopeGlobalSettingsConfigurable"/>
   </extensions>
 
   <application-components>

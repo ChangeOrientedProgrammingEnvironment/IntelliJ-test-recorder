@@ -1,26 +1,35 @@
 package edu.oregonstate.cope.intellijListener.listeners;
 
 
-import org.apache.http.HttpResponse;
+import edu.oregonstate.cope.settings.CopeGlobalSettings;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.ContentType;
-import org.apache.http.entity.InputStreamEntity;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 import org.json.simple.JSONObject;
 
 import java.io.*;
-import java.net.MalformedURLException;
 
 /**
  * Created by michaelhilton on 9/29/15.
  */
 public class RESTInterface {
+
+    public static String testConnection(String url) throws IOException {
+        HttpPost httppost = new HttpPost(url);
+        try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
+            JSONObject jsonObject = TestListener.buildCommonJSONObj(Events.testConnection);
+            StringEntity input = new StringEntity(jsonObject.toString());
+            input.setContentType("application/json");
+            httppost.setEntity(input);
+            try (CloseableHttpResponse response = httpClient.execute(httppost)) {
+                return response.getStatusLine().toString();
+            }
+        }
+    }
 
     public static void sampleRESTCall(JSONObject testJSON){
 
@@ -28,7 +37,8 @@ public class RESTInterface {
 
         CloseableHttpClient httpclient = HttpClients.createDefault();
         try {
-            HttpPost httppost = new HttpPost("http://localhost:3000/loopback/testPost");
+            String url = CopeGlobalSettings.getInstance().getUrl();
+            HttpPost httppost = new HttpPost(url);
 
             StringEntity input = new StringEntity(testJSON.toString());
             input.setContentType("application/json");
