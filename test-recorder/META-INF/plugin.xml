@@ -1,12 +1,11 @@
 <idea-plugin version="2">
-  <id>com.yourcompany.unique.plugin.id</id>
-  <name>Plugin display name here</name>
-  <version>1.0</version>
-  <vendor email="support@yourcompany.com" url="http://www.yourcompany.com">YourCompany</vendor>
+  <id>edu.oregonstate.cope.intellij.recorder</id>
+  <name>COPE Recorder</name>
+  <version>0.9.7</version>
+  <vendor email="cope@eecs.oregonstate.edu" url="http://cope.eecs.oregonstate.edu">Oregon State University</vendor>
 
   <description><![CDATA[
-      Enter short description for your plugin here.<br>
-      <em>most HTML tags may be used</em>
+      IntelliJ IDEA plugin that records Test and Run executions within the IDE.
     ]]></description>
 
   <change-notes><![CDATA[
