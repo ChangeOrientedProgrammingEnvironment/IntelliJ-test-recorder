@@ -19,11 +19,9 @@ public class PluginComponent implements ProjectComponent {
     }
 
     public void initComponent() {
-        // TODO: insert component initialization logic here
     }
 
     public void disposeComponent() {
-        // TODO: insert component disposal logic here
     }
 
     @NotNull
