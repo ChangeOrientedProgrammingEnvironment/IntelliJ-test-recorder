@@ -70,37 +70,16 @@ public class COPEBeforeRunTaskProvider extends BeforeRunTaskProvider<COPEBeforeR
 
     @Override
     public boolean executeTask(DataContext context, final RunConfiguration configuration, ExecutionEnvironment env, COPEBeforeRunTask task) {
-//        try {
-//            IDEAClientRecorder ideaClientRecorder = (IDEAClientRecorder) env.getProject().getComponent(COPEComponent.class).getRecorder().getClientRecorder();
-//
-//            Element element = new Element("launchRecording");
-//            configuration.writeExternal(element);
-//            String xmlString = new XMLOutputter().outputString(element);
-//            ideaClientRecorder.recordIDEALaunch(xmlString);
-//        } catch (WriteExternalException e) {
-//        }
         Element element = new Element("launchRecording");
         String executionType = env.getExecutor().getStartActionText().toString();
         try {
             configuration.writeExternal(element);
             String xmlString = new XMLOutputter().outputString(element);
-//            System.out.println("TRUE");
-//            env.toString();
-//            String xmlEnv = new XMLOutputter().outputString( env);
-//            System.out.println("TRUE");
-
-
             org.json.JSONObject soapDatainJsonObject = XML.toJSONObject(xmlString);
-
             JSONObject obj=new JSONObject();
             obj.put("evn",executionType);
             obj.put("element",soapDatainJsonObject);
             System.out.println(obj);
-
-
-//            System.out.println(soapDatainJsonObject);
-
-
 
         } catch (WriteExternalException e) {
             e.printStackTrace();

@@ -19,7 +19,6 @@ import static edu.oregonstate.cope.intellijListener.listeners.RESTInterface.samp
  * Created by mihai on 4/8/14.
  */
 public class TestListener extends TestStatusListener {
-
     //copy paste from org.eclipse.jdt.junit.model.ITestElement.Result
     public static final class Result {
         /**
