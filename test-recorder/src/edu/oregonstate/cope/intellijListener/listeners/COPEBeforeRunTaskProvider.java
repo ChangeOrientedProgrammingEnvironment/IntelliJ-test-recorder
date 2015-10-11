@@ -79,7 +79,7 @@ public class COPEBeforeRunTaskProvider extends BeforeRunTaskProvider<COPEBeforeR
             JSONObject obj=new JSONObject();
             obj.put("evn",executionType);
             obj.put("element",soapDatainJsonObject);
-            System.out.println(obj);
+            CopeRestAsyncService.getInstance().submitJSON(obj);
 
         } catch (WriteExternalException e) {
             e.printStackTrace();

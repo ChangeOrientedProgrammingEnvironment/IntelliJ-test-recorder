@@ -4,21 +4,22 @@ import com.intellij.execution.Location;
 import com.intellij.execution.junit2.info.MethodLocation;
 import com.intellij.execution.testframework.AbstractTestProxy;
 import com.intellij.execution.testframework.TestStatusListener;
+import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.project.ProjectManager;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.rt.execution.junit.states.PoolOfTestStates;
-
 import org.json.simple.JSONObject;
-
-import static edu.oregonstate.cope.intellijListener.listeners.RESTInterface.sampleRESTCall;
 
 
 /**
  * Created by mihai on 4/8/14.
  */
 public class TestListener extends TestStatusListener {
+
+    private static final Logger LOG = Logger.getInstance(TestStatusListener.class);
+
     //copy paste from org.eclipse.jdt.junit.model.ITestElement.Result
     public static final class Result {
         /**
@@ -54,7 +55,7 @@ public class TestListener extends TestStatusListener {
     }
 
     @Override
-    public void testSuiteFinished(AbstractTestProxy root) {
+    public void testSuiteFinished(final AbstractTestProxy root) {
         for (AbstractTestProxy test : root.getAllTests()) {
             if (!test.isLeaf()) {
                 continue;
@@ -69,15 +70,15 @@ public class TestListener extends TestStatusListener {
             String qualifiedTestName = constructQualifiedName(test, project);
             Result testResult = computeTestResult(test);
             Double testTime = getTestTimeInSeconds(test);
-            JSONObject testJSON = null;
+
             try {
-                testJSON = buildTestEventJSON(qualifiedTestName, testResult.toString(), testTime);
+                JSONObject testJSON = buildTestEventJSON(qualifiedTestName, testResult.toString(), testTime);
+                //Cannot pull all the method into another thread, as AbstractTestProxy is not thread-safe.
+                CopeRestAsyncService.getInstance().submitJSON(testJSON);
             } catch (Exception e) {
-                e.printStackTrace();
+                LOG.error(e);
+                return;
             }
-
-
-            sampleRESTCall(testJSON);
         }
     }
 
@@ -129,7 +130,7 @@ public class TestListener extends TestStatusListener {
         if (testMagnitude == PoolOfTestStates.FAILED_INDEX || testMagnitude == PoolOfTestStates.COMPARISON_FAILURE) {
             return Result.FAILURE;
         }
-       return Result.UNDEFINED;
+        return Result.UNDEFINED;
     }
 
     protected static JSONObject buildCommonJSONObj(Enum eventType) {
@@ -142,7 +143,8 @@ public class TestListener extends TestStatusListener {
         return obj;
     }
 
-    protected JSONObject buildTestEventJSON(String fullyQualifiedTestMethod, String testResult, double elapsedTime) throws Exception {
+    protected JSONObject buildTestEventJSON(String fullyQualifiedTestMethod, String testResult, double elapsedTime)
+            throws Exception {
         if (fullyQualifiedTestMethod == null || testResult == null)
             throw new Exception("Arguments cannot be null");
         if (fullyQualifiedTestMethod.isEmpty() || testResult.isEmpty())
