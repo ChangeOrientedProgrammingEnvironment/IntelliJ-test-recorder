@@ -9,7 +9,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
-import static edu.oregonstate.cope.intellijListener.listeners.RESTInterface.sampleRESTCall;
+import static edu.oregonstate.cope.intellijListener.listeners.RESTInterface.RESTcall;
 
 /**
  * @author Denis Bogdanas <bogdanad@oregonstate.edu>
@@ -32,7 +32,7 @@ public class CopeRestAsyncService extends ApplicationComponent.Adapter {
 
     void submitJSON(JSONObject testJSON) {
         executor.submit((Runnable) () -> {
-            sampleRESTCall(testJSON);
+            RESTcall(testJSON);
         });
     }
 

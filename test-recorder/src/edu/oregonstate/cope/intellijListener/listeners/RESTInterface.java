@@ -31,11 +31,14 @@ public class RESTInterface {
         }
     }
 
-    public static void sampleRESTCall(JSONObject testJSON){
+    public static void RESTcall(JSONObject testJSON){
         CloseableHttpClient httpclient = HttpClients.createDefault();
         try {
+            String userName = CopeGlobalSettings.getInstance().getUserId();
             String url = CopeGlobalSettings.getInstance().getUrl();
             HttpPost httppost = new HttpPost(url);
+
+            testJSON.put("username",userName);
 
             StringEntity input = new StringEntity(testJSON.toString());
             input.setContentType("application/json");
