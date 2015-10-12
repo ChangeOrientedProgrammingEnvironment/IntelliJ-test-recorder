@@ -1,5 +1,6 @@
 package edu.oregonstate.cope.intellijListener.listeners;
 
+import edu.oregonstate.cope.settings.PluginStatusBar;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

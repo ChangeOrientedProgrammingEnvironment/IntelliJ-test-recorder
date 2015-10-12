@@ -28,7 +28,7 @@
     <testStatusListener implementation="edu.oregonstate.cope.intellijListener.listeners.TestListener">  </testStatusListener>
     <applicationService serviceInterface="edu.oregonstate.cope.settings.CopeGlobalSettings"
                         serviceImplementation="edu.oregonstate.cope.settings.CopeGlobalSettings"/>
-      <stepsBeforeRunProvider implementation="edu.oregonstate.cope.intellijListener.listeners.COPEBeforeRunTaskProvider"></stepsBeforeRunProvider>
+      <stepsBeforeRunProvider implementation="edu.oregonstate.cope.intellijListener.listeners.COPEBeforeRunTaskProvider">  </stepsBeforeRunProvider>
       <applicationConfigurable instance="edu.oregonstate.cope.settings.CopeGlobalSettingsConfigurable"/>
   </extensions>
 
@@ -41,7 +41,7 @@
   <project-components>
     <!-- Add your project components here -->
     <component>
-      <implementation-class>edu.oregonstate.cope.intellijListener.listeners.PluginComponent</implementation-class>
+      <implementation-class>edu.oregonstate.cope.settings.PluginComponent</implementation-class>
     </component>
   </project-components>
 

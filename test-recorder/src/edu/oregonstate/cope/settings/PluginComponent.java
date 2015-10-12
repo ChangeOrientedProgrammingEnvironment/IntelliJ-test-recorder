@@ -1,4 +1,4 @@
-package edu.oregonstate.cope.intellijListener.listeners;
+package edu.oregonstate.cope.settings;
 
 import com.intellij.openapi.components.ProjectComponent;
 import com.intellij.openapi.project.Project;

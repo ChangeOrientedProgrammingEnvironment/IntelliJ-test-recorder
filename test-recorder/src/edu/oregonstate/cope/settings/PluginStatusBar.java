@@ -1,6 +1,6 @@
-package edu.oregonstate.cope.intellijListener.listeners;
+package edu.oregonstate.cope.settings;
 
-import com.intellij.openapi.ui.Messages;
+import com.intellij.openapi.options.ShowSettingsUtil;
 import com.intellij.openapi.util.IconLoader;
 import com.intellij.openapi.wm.StatusBar;
 import com.intellij.openapi.wm.StatusBarWidget;
@@ -94,13 +94,7 @@ public class PluginStatusBar implements StatusBarWidget, StatusBarWidget.IconPre
     @Nullable
     @Override
     public Consumer<MouseEvent> getClickConsumer() {
-        if(state == State.INACTIVE || state == State.FAULT) {
-            return mouseEvent -> {
-                String updateMessage = "Your version of COPE is out of date.  Please update your plugin!";
-                Messages.showMessageDialog(updateMessage, "COPE", Messages.getInformationIcon());
-            };
-        } else {
-            return null;
-        }
+        if(state == State.ACTIVE) return mouseEvent -> ShowSettingsUtil.getInstance().showSettingsDialog(null, "COPE");
+        else { return null; }
     }
 }
