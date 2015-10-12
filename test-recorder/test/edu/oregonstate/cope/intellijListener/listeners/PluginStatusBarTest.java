@@ -15,13 +15,11 @@ import static org.junit.Assert.assertThat;
  */
 public class PluginStatusBarTest {
 
-    private PluginStatusBar statusbar_updates;
-    private PluginStatusBar statusbar_noupdates;
+    private PluginStatusBar statusbar;
 
     @Before
     public void setUp() throws Exception {
-        statusbar_updates = new PluginStatusBar(Boolean.TRUE);
-        statusbar_noupdates = new PluginStatusBar(Boolean.FALSE);
+        statusbar = new PluginStatusBar();
     }
 
     @After
@@ -41,14 +39,12 @@ public class PluginStatusBarTest {
      */
     @Test
     public void testGetIcon() throws Exception {
-        assertThat(statusbar_updates.getIcon(), instanceOf(Icon.class));
-        assertThat(statusbar_noupdates.getIcon(), instanceOf(Icon.class));
+        assertThat(statusbar.getIcon(), instanceOf(Icon.class));
     }
 
     @Test
     public void testID() throws Exception {
-        assertEquals(statusbar_updates.ID(), "COPE STATUS ID");
-        assertEquals(statusbar_noupdates.ID(), "COPE STATUS ID");
+        assertEquals(statusbar.ID(), "COPE STATUS ID");
     }
 
     @Test

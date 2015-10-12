@@ -5,6 +5,7 @@ import com.intellij.openapi.util.IconLoader;
 import com.intellij.openapi.wm.StatusBar;
 import com.intellij.openapi.wm.StatusBarWidget;
 import com.intellij.util.Consumer;
+import com.intellij.util.ui.UIUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -16,12 +17,23 @@ import java.awt.event.MouseEvent;
  */
 public class PluginStatusBar implements StatusBarWidget, StatusBarWidget.IconPresentation {
 
-    private final Boolean updateReady;
-    private static final Icon PLUGIN_NOUPDATES_ICON = IconLoader.getIcon("resources/cope_logo.png");
-    private static final Icon PLUGIN_UPDATES_ICON = IconLoader.getIcon("resources/cope_logo_updates.png");
+    public enum State {
+        ACTIVE, INACTIVE, FAULT
+    }
+    private final State state;
+    private static final Icon PLUGIN_ACTIVE_DARK_ICON = IconLoader.getIcon("resources/logo_active_dark.png");
+    private static final Icon PLUGIN_ACTIVE_LITE_ICON = IconLoader.getIcon("resources/logo_active_lite.png");
+    private static final Icon PLUGIN_INACTIVE_DARK_ICON = IconLoader.getIcon("resources/logo_inactive_dark.png");
+    private static final Icon PLUGIN_INACTIVE_LITE_ICON = IconLoader.getIcon("resources/logo_inactive_lite.png");
+    private static final Icon PLUGIN_FAULT_DARK_ICON = IconLoader.getIcon("resources/logo_fault_dark.png");
+    private static final Icon PLUGIN_FAULT_LITE_ICON = IconLoader.getIcon("resources/logo_fault_lite.png");
 
-    public PluginStatusBar(Boolean updateReady) {
-        this.updateReady = updateReady;
+    public PluginStatusBar() {
+        this(State.ACTIVE);
+    }
+
+    public PluginStatusBar(State state) {
+        this.state = state;
     }
 
     @Override
@@ -32,10 +44,27 @@ public class PluginStatusBar implements StatusBarWidget, StatusBarWidget.IconPre
     @NotNull
     @Override
     public Icon getIcon() {
-        if(updateReady) {
-            return PLUGIN_UPDATES_ICON;
-        } else {
-            return PLUGIN_NOUPDATES_ICON;
+        switch (state) {
+            case INACTIVE:
+                if (UIUtil.isUnderDarcula()) {
+                    return PLUGIN_INACTIVE_LITE_ICON;
+                } else {
+                    return PLUGIN_INACTIVE_DARK_ICON;
+                }
+            case FAULT:
+                if (UIUtil.isUnderDarcula()) {
+                    return PLUGIN_FAULT_LITE_ICON;
+                } else {
+                    return PLUGIN_FAULT_DARK_ICON;
+                }
+            case ACTIVE:
+                // continue to default
+            default:
+                if (UIUtil.isUnderDarcula()) {
+                    return PLUGIN_ACTIVE_LITE_ICON;
+                } else {
+                    return PLUGIN_ACTIVE_DARK_ICON;
+                }
         }
     }
 
@@ -65,12 +94,10 @@ public class PluginStatusBar implements StatusBarWidget, StatusBarWidget.IconPre
     @Nullable
     @Override
     public Consumer<MouseEvent> getClickConsumer() {
-        if(updateReady) {
-            return new Consumer<MouseEvent>() {
-                public void consume(MouseEvent mouseEvent) {
-                    String updateMessage = "Your version of COPE is out of date.  Please update your plugin!";
-                    Messages.showMessageDialog(updateMessage, "COPE", Messages.getInformationIcon());
-                }
+        if(state == State.INACTIVE || state == State.FAULT) {
+            return mouseEvent -> {
+                String updateMessage = "Your version of COPE is out of date.  Please update your plugin!";
+                Messages.showMessageDialog(updateMessage, "COPE", Messages.getInformationIcon());
             };
         } else {
             return null;
