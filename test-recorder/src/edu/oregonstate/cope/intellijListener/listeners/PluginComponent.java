@@ -12,7 +12,7 @@ import org.jetbrains.annotations.NotNull;
 public class PluginComponent implements ProjectComponent {
 
     private Project project;
-    PluginStatusBar status;
+    PluginStatusBar statusbar;
 
     public PluginComponent(Project project) {
         this.project = project;
@@ -30,12 +30,11 @@ public class PluginComponent implements ProjectComponent {
     }
 
     public void projectOpened() {
-        Boolean updateReady = Boolean.TRUE;
         StatusBar statusBar = WindowManager.getInstance().getStatusBar(project);
 
         if (statusBar != null) {
-            status = new PluginStatusBar(updateReady);
-            statusBar.addWidget(status);
+            statusbar = new PluginStatusBar();
+            statusBar.addWidget(statusbar);
         }
     }
 
