@@ -72,7 +72,7 @@ public class PluginStatusBar implements StatusBarWidget, StatusBarWidget.IconPre
                     Messages.showMessageDialog(updateMessage, "COPE", Messages.getInformationIcon());
                 }
             };
-        }else{
+        } else {
             return null;
         }
     }
