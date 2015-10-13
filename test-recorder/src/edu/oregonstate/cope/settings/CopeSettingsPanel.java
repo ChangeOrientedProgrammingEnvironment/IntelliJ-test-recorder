@@ -1,5 +1,6 @@
 package edu.oregonstate.cope.settings;
 
+import com.google.common.base.Strings;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.ui.Messages;
 import edu.oregonstate.cope.intellijListener.listeners.RESTInterface;
@@ -30,7 +31,12 @@ public class CopeSettingsPanel {
                 Messages.showInfoMessage(panel, "Connection successful: " + response, "Success");
             } catch (IOException ex) {
                 LOG.info("Test connection failed", ex);
-                Messages.showErrorDialog(panel, "Connection failure: " + ex.getMessage(), "Connection Failure");
+                Messages.showErrorDialog(panel, "Connection failure: "
+                        + (Strings.isNullOrEmpty(ex.getMessage()) ? ex.getClass().getSimpleName() : ex.getMessage()),
+                        "Connection Failure");
+            } catch (IllegalArgumentException ex) {
+                LOG.info("Invalid URL", ex);
+                Messages.showErrorDialog(panel, "Invalid URL: " + ex.getMessage(), "Invalid URL");
             }
         });
     }
