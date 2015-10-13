@@ -5,6 +5,7 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.wm.StatusBar;
 import com.intellij.openapi.wm.WindowManager;
 import org.jetbrains.annotations.NotNull;
+import edu.oregonstate.cope.installer.SurveyProvider;
 
 /**
  * Created by nelsonni on 10/2/15.
@@ -36,9 +37,16 @@ public class PluginComponent implements ProjectComponent {
             statusbar = new PluginStatusBar();
             statusBar.addWidget(statusbar);
         }
+
+        System.out.println("SETUP PROJECT");
+        System.out.println(CopeGlobalSettings.getInstance().getUserId());
+        if(CopeGlobalSettings.getInstance().getUserId() == null){
+            SurveyProvider.configureSurveyPlugin();
+        }
     }
 
     public void projectClosed() {
         // called when project is being closed
+
     }
 }
