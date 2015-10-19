@@ -28,8 +28,9 @@
     <testStatusListener implementation="edu.oregonstate.cope.intellijListener.listeners.TestListener">  </testStatusListener>
     <applicationService serviceInterface="edu.oregonstate.cope.settings.CopeGlobalSettings"
                         serviceImplementation="edu.oregonstate.cope.settings.CopeGlobalSettings"/>
-      <stepsBeforeRunProvider implementation="edu.oregonstate.cope.intellijListener.listeners.COPEBeforeRunTaskProvider">  </stepsBeforeRunProvider>
-      <applicationConfigurable instance="edu.oregonstate.cope.settings.CopeGlobalSettingsConfigurable"/>
+    <stepsBeforeRunProvider implementation="edu.oregonstate.cope.intellijListener.listeners.COPEBeforeRunTaskProvider">  </stepsBeforeRunProvider>
+    <applicationConfigurable instance="edu.oregonstate.cope.settings.CopeGlobalSettingsConfigurable"/>
+    <fileDocumentManagerListener implementation="edu.oregonstate.cope.intellijListener.listeners.DocumentListener"/>
   </extensions>
 
   <application-components>
