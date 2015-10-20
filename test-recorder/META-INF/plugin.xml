@@ -25,12 +25,13 @@
 
   <extensions defaultExtensionNs="com.intellij">
     <!-- Add your extensions here -->
-    <testStatusListener implementation="edu.oregonstate.cope.intellijListener.listeners.TestListener">  </testStatusListener>
+    <testStatusListener implementation="edu.oregonstate.cope.intellijListener.listeners.TestListener"/>
     <applicationService serviceInterface="edu.oregonstate.cope.settings.CopeGlobalSettings"
                         serviceImplementation="edu.oregonstate.cope.settings.CopeGlobalSettings"/>
-    <stepsBeforeRunProvider implementation="edu.oregonstate.cope.intellijListener.listeners.COPEBeforeRunTaskProvider">  </stepsBeforeRunProvider>
+    <stepsBeforeRunProvider implementation="edu.oregonstate.cope.intellijListener.listeners.COPEBeforeRunTaskProvider"/>
     <applicationConfigurable instance="edu.oregonstate.cope.settings.CopeGlobalSettingsConfigurable"/>
     <fileDocumentManagerListener implementation="edu.oregonstate.cope.intellijListener.listeners.DocumentListener"/>
+    <fileEditorProvider implementation="edu.oregonstate.cope.intellijListener.listeners.FileEditorListener"/>
   </extensions>
 
   <application-components>
