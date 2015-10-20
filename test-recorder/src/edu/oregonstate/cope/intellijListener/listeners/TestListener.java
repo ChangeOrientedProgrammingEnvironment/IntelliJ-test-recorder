@@ -136,7 +136,7 @@ public class TestListener extends TestStatusListener {
     protected static JSONObject buildCommonJSONObj(Enum eventType) {
         JSONObject obj;
         obj = new JSONObject();
-        obj.put(JSONConstants.JSON_IDE, "INTEILLIJ");
+        obj.put(JSONConstants.JSON_IDE, "INTELLIJ");
         obj.put(JSONConstants.JSON_EVENT_TYPE, eventType.toString());
         obj.put(JSONConstants.JSON_TIMESTAMP, System.currentTimeMillis() + "");
 
