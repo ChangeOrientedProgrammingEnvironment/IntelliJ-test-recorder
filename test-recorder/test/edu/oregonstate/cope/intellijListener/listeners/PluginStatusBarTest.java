@@ -1,6 +1,6 @@
 package edu.oregonstate.cope.intellijListener.listeners;
 
-import edu.oregonstate.cope.settings.PluginStatusBar;
+import edu.oregonstate.cope.core.PluginStatusBar;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -12,6 +12,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 
 /**
+ * Change-Oriented Programming Environment (COPE) project
+ * URL: http://cope.eecs.oregonstate.edu/
  * Created by nelsonni on 10/12/15.
  */
 public class PluginStatusBarTest {

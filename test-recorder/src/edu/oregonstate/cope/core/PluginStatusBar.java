@@ -1,4 +1,4 @@
-package edu.oregonstate.cope.settings;
+package edu.oregonstate.cope.core;
 
 import com.intellij.openapi.options.ShowSettingsUtil;
 import com.intellij.openapi.util.IconLoader;
@@ -13,6 +13,8 @@ import javax.swing.*;
 import java.awt.event.MouseEvent;
 
 /**
+ * Change-Oriented Programming Environment (COPE) project
+ * URL: http://cope.eecs.oregonstate.edu/
  * Created by nelsonni on 10/2/15.
  */
 public class PluginStatusBar implements StatusBarWidget, StatusBarWidget.IconPresentation {
@@ -71,7 +73,7 @@ public class PluginStatusBar implements StatusBarWidget, StatusBarWidget.IconPre
     @NotNull
     @Override
     public String ID() {
-        return "COPE STATUS ID";
+        return "COPE";
     }
 
     @Nullable

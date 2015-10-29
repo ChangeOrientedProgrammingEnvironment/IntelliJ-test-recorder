@@ -43,7 +43,7 @@
   <project-components>
     <!-- Add your project components here -->
     <component>
-      <implementation-class>edu.oregonstate.cope.settings.PluginComponent</implementation-class>
+      <implementation-class>edu.oregonstate.cope.core.PluginComponent</implementation-class>
     </component>
   </project-components>
 
