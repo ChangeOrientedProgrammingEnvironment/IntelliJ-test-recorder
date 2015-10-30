@@ -31,7 +31,7 @@
     <stepsBeforeRunProvider implementation="edu.oregonstate.cope.intellijListener.listeners.COPEBeforeRunTaskProvider"/>
     <applicationConfigurable instance="edu.oregonstate.cope.settings.CopeGlobalSettingsConfigurable"/>
     <fileDocumentManagerListener implementation="edu.oregonstate.cope.intellijListener.listeners.DocumentListener"/>
-    <fileEditorProvider implementation="edu.oregonstate.cope.intellijListener.listeners.FileEditorListener"/>
+    <!-- <fileEditorProvider implementation="edu.oregonstate.cope.intellijListener.listeners.FileEditorListener"/> -->
   </extensions>
 
   <application-components>
