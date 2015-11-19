@@ -1,11 +1,14 @@
 package edu.oregonstate.cope.core;
 
 import com.intellij.openapi.components.ProjectComponent;
+import com.intellij.openapi.fileEditor.FileEditorManagerListener;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.wm.StatusBar;
 import com.intellij.openapi.wm.WindowManager;
 import com.intellij.psi.PsiManager;
 import com.intellij.psi.PsiTreeChangeAdapter;
+import com.intellij.util.messages.MessageBusConnection;
+import edu.oregonstate.cope.intellijListener.listeners.FileEditorListener;
 import edu.oregonstate.cope.intellijListener.listeners.PsiTreeListener;
 import org.jetbrains.annotations.NotNull;
 
@@ -17,33 +20,42 @@ import org.jetbrains.annotations.NotNull;
 public class PluginComponent implements ProjectComponent {
 
     private Project project;
-    PluginStatusBar statusbar;
     private final PsiManager psiManager;
+    private final MessageBusConnection msgBus;
 
-    public PsiTreeChangeAdapter listener;
+    public PsiTreeChangeAdapter psiListener;
+    public FileEditorListener fileListener;
+
+    PluginStatusBar statusbar;
 
     public PluginComponent(Project project, PsiManager psiManager) {
         this.psiManager = psiManager;
         this.project = project;
+        this.msgBus = project.getMessageBus().connect(project);
     }
 
     public void initComponent() {
+        System.out.println("adding FileEditorManagerListener");
+        msgBus.subscribe(FileEditorManagerListener.FILE_EDITOR_MANAGER, fileListener = new FileEditorListener());
     }
 
     public void disposeComponent() {
+        if (fileListener != null) {
+            System.out.println("removing FileEditorManagerListener");
+            msgBus.disconnect();
+        }
     }
 
     @NotNull
     public String getComponentName() {
-        return "PluginComponent";
+        return "COPE Plugin Component";
     }
 
     public void projectOpened() {
-        StatusBar statusBar = WindowManager.getInstance().getStatusBar(project);
-
         System.out.println("adding PsiTreeChangeListener");
-        psiManager.addPsiTreeChangeListener(listener = new PsiTreeListener());
+        psiManager.addPsiTreeChangeListener(psiListener = new PsiTreeListener());
 
+        StatusBar statusBar = WindowManager.getInstance().getStatusBar(project);
         if (statusBar != null) {
             statusbar = new PluginStatusBar();
             statusBar.addWidget(statusbar);
@@ -51,9 +63,14 @@ public class PluginComponent implements ProjectComponent {
     }
 
     public void projectClosed() {
-        if (listener != null) {
+        if (psiListener != null) {
             System.out.println("removing PsiTreeChangeListener");
-            psiManager.removePsiTreeChangeListener(listener);
+            psiManager.removePsiTreeChangeListener(psiListener);
         }
+
+//        statusbar.dispose();
+
+//        String id = WindowManager.getInstance().getStatusBar(project).getComponent().getUIClassID();
+//        WindowManager.getInstance().getStatusBar(project).removeWidget(id);
     }
 }

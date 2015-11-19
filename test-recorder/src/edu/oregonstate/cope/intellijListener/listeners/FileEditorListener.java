@@ -1,66 +1,40 @@
 package edu.oregonstate.cope.intellijListener.listeners;
 
-import com.intellij.openapi.fileEditor.FileEditor;
-import com.intellij.openapi.fileEditor.FileEditorPolicy;
-import com.intellij.openapi.fileEditor.FileEditorProvider;
-import com.intellij.openapi.fileEditor.FileEditorState;
-import com.intellij.openapi.project.Project;
+import com.intellij.openapi.fileEditor.FileEditorManager;
+import com.intellij.openapi.fileEditor.FileEditorManagerAdapter;
+import com.intellij.openapi.fileEditor.FileEditorManagerEvent;
 import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.psi.search.PsiShortNamesCache;
-import org.jdom.Element;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * Created by nelsonni on 10/19/15.
+ * Change-Oriented Programming Environment (COPE) project
+ * URL: http://cope.eecs.oregonstate.edu/
+ * Created by nelsonni on 11/18/15.
  */
-public class FileEditorListener implements FileEditorProvider {
+public class FileEditorListener extends FileEditorManagerAdapter {
 
     @Override
-    public boolean accept(Project project, VirtualFile virtualFile) {
-        int count = 0;
-        System.out.println("accept project: " + project.getName());
-        for (String s : PsiShortNamesCache.getInstance(project).getAllClassNames()) {
-            if (s.compareTo("constructQualifiedName") == 0) {
-                System.out.println("class: " + s);
-            }
-            count += 1;
+    public void selectionChanged(@NotNull FileEditorManagerEvent event) {
+        if (event.getOldFile() == null && event.getNewFile() == null) {
+            System.out.println("selectionChanged: context switching without old or new file");
+        } else if (event.getOldFile() == null) {
+            System.out.println("selectionChanged: newly opened file " + event.getNewFile().getName());
+        } else if (event.getNewFile() == null) {
+            System.out.println("selectionChanged: closed file " + event.getOldFile().getName());
+        } else {
+            String oldFile = event.getOldFile().getName();
+            String newFile = event.getNewFile().getName();
+            System.out.println("selectionChanged: switched from " + oldFile + " to " + newFile);
         }
-        System.out.println("classes in project: " + count);
-        return false;
-    }
-
-    @NotNull
-    @Override
-    public FileEditor createEditor(Project project, VirtualFile virtualFile) {
-        System.out.println("createEditor project: " + project.getName());
-        return null;
     }
 
     @Override
-    public void disposeEditor(@NotNull FileEditor fileEditor) {
-    }
-
-    @NotNull
-    @Override
-    public FileEditorState readState(@NotNull Element element, @NotNull Project project, @NotNull VirtualFile virtualFile) {
-        System.out.println("readState project: " + project.getName());
-        return null;
+    public void fileOpened(@NotNull FileEditorManager source, @NotNull VirtualFile file) {
+        System.out.println("fileOpened: " + file.getName());
     }
 
     @Override
-    public void writeState(@NotNull FileEditorState fileEditorState, @NotNull Project project, @NotNull Element element) {
-        System.out.println("writeState project: " + project.getName());
-    }
-
-    @NotNull
-    @Override
-    public String getEditorTypeId() {
-        return "COPE-monitor";
-    }
-
-    @NotNull
-    @Override
-    public FileEditorPolicy getPolicy() {
-        return null;
+    public void fileClosed(@NotNull FileEditorManager source, @NotNull VirtualFile file) {
+        System.out.println("fileClosed: " + file.getName());
     }
 }
