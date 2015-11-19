@@ -1,14 +1,7 @@
 package edu.oregonstate.cope.core;
 
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.PsiManager;
 import com.intellij.psi.PsiMethod;
-import com.intellij.psi.util.PsiTreeUtil;
 
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
