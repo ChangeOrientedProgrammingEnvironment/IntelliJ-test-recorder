@@ -30,14 +30,16 @@
                         serviceImplementation="edu.oregonstate.cope.settings.CopeGlobalSettings"/>
     <stepsBeforeRunProvider implementation="edu.oregonstate.cope.intellijListener.listeners.COPEBeforeRunTaskProvider"/>
     <applicationConfigurable instance="edu.oregonstate.cope.settings.CopeGlobalSettingsConfigurable"/>
-    <fileDocumentManagerListener implementation="edu.oregonstate.cope.intellijListener.listeners.DocumentListener"/>
-    <!-- <fileEditorProvider implementation="edu.oregonstate.cope.intellijListener.listeners.FileEditorListener"/> -->
+    <!-- <fileDocumentManagerListener implementation="edu.oregonstate.cope.intellijListener.listeners.DocumentListener"/> -->
   </extensions>
 
   <application-components>
     <component>
       <implementation-class>edu.oregonstate.cope.intellijListener.listeners.CopeRestAsyncService</implementation-class>
     </component>
+    <!-- <component>
+      <implementation-class>edu.oregonstate.cope.core.COPEApplicationComponent</implementation-class>
+    </component> -->
   </application-components>
 
   <project-components>
