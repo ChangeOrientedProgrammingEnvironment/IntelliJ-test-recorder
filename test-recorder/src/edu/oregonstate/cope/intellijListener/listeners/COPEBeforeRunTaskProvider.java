@@ -1,7 +1,5 @@
 package edu.oregonstate.cope.intellijListener.listeners;
 
-import com.google.gson.Gson;
-import com.intellij.execution.BeforeRunTask;
 import com.intellij.execution.BeforeRunTaskProvider;
 import com.intellij.execution.configurations.RunConfiguration;
 import com.intellij.execution.runners.ExecutionEnvironment;
@@ -9,13 +7,10 @@ import com.intellij.openapi.actionSystem.DataContext;
 import com.intellij.openapi.util.Key;
 import com.intellij.openapi.util.WriteExternalException;
 import org.jdom.Element;
-import org.jdom.output.Format;
 import org.jdom.output.XMLOutputter;
 import org.jetbrains.annotations.Nullable;
 import org.json.XML;
 import org.json.simple.JSONObject;
-
-import java.util.List;
 
 
 /**
