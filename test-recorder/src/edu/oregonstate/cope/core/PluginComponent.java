@@ -82,7 +82,8 @@ public class PluginComponent implements ProjectComponent {
             psiManager.removePsiTreeChangeListener(psiListener);
         }
 
-//        statusbar.dispose();
+        StatusBar statusBar = WindowManager.getInstance().getStatusBar(project);
+        statusBar.removeWidget(statusbar.ID());
 
 //        String id = WindowManager.getInstance().getStatusBar(project).getComponent().getUIClassID();
 //        WindowManager.getInstance().getStatusBar(project).removeWidget(id);
