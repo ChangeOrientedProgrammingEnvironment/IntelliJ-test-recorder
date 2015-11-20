@@ -80,9 +80,11 @@ public class PsiTreeListener extends PsiTreeChangeAdapter {
             NodeActivityTracker tracker = NodeActivityTracker.getInstance();
             ASTNode astNode = psiElement.getNode();
             int modASTNodes = (astNode.getTreeNext() == null) ? 0 : astNode.getTreeNext().getChildren(null).length;
-            tracker.update(psiMethod, modASTNodes);
+            if (modASTNodes <= 1) { modASTNodes += 1; }
+
             String location = psiClass.getName() + "." + psiMethod.getName();
-            System.out.println("\tmethod activity: " + location + " - " + tracker.get(psiMethod));
+            tracker.update(location, modASTNodes);
+            System.out.println("\tmethod activity: " + location + " - " + tracker.get(location));
         }
     }
 

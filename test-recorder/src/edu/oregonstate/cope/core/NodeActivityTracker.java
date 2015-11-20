@@ -1,9 +1,12 @@
 package edu.oregonstate.cope.core;
 
+import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiMethod;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Change-Oriented Programming Environment (COPE) project
@@ -26,18 +29,24 @@ public final class NodeActivityTracker {
         return instance;
     }
 
-    public Integer get(PsiMethod method) {
-        return methodMap.get(method.getName());
+    public Integer get(PsiClass psiClass, PsiMethod psiMethod) {
+        String qualifiedMethod = psiClass.getQualifiedName() + psiMethod.getName();
+        return methodMap.get(qualifiedMethod);
     }
 
-    public void update(PsiMethod method, Integer count) {
-        String key = method.getName();
+    public Integer get(String qualifiedMethod) { return methodMap.get(qualifiedMethod); }
+
+    @NotNull
+    public Set getAll() { return methodMap.entrySet(); }
+
+    public void update(String key, Integer count) {
         Integer old = methodMap.getOrDefault(key, 0);
         methodMap.remove(key);
         methodMap.put(key, (old + count));
     }
 
 //    public void collectMethods(Project project, VirtualFile vFile) {
+
 //        PsiFile pfile = PsiManager.getInstance(project).findFile(vFile);
 //        PsiElement root = pfile.findElementAt(0);
 //
