@@ -3,6 +3,7 @@ package edu.oregonstate.cope.intellijListener.listeners;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.*;
 import com.intellij.psi.util.PsiTreeUtil;
+import edu.oregonstate.cope.core.ActivityEvent;
 import edu.oregonstate.cope.core.NodeActivityTracker;
 import org.jetbrains.annotations.NotNull;
 
@@ -90,27 +91,67 @@ public class PsiTreeListener extends PsiTreeChangeAdapter {
 
     @Override
     public void childAdded(@NotNull PsiTreeChangeEvent event) {
-        recordActivity("childAdded", event);
+        //recordActivity("childAdded", event);
+
+        ActivityEvent ae = new ActivityEvent(event);
+
+        System.out.println(ae.getTimestamp() + ": childAdded");
+        System.out.println("\tfile: " + ae.getSimpleFileName());
+        System.out.println("\tclass: " + ae.getClassName());
+        System.out.println("\tmethod: " + ae.getMethodName());
+        System.out.println("\tnodes: " + ae.getNodeCount());
     }
 
     @Override
     public void childMoved(@NotNull PsiTreeChangeEvent event) {
-        recordActivity("childMoved", event);
+        //recordActivity("childMoved", event);
+
+        ActivityEvent ae = new ActivityEvent(event);
+
+        System.out.println(ae.getTimestamp() + ": childAdded");
+        System.out.println("\tfile: " + ae.getSimpleFileName());
+        System.out.println("\tclass: " + ae.getClassName());
+        System.out.println("\tmethod: " + ae.getMethodName());
+        System.out.println("\tnodes: " + ae.getNodeCount());
     }
 
     @Override
     public void childRemoved(@NotNull PsiTreeChangeEvent event) {
-        recordActivity("childRemoved", event);
+        //recordActivity("childRemoved", event);
+
+        ActivityEvent ae = new ActivityEvent(event);
+
+        System.out.println(ae.getTimestamp() + ": childAdded");
+        System.out.println("\tfile: " + ae.getSimpleFileName());
+        System.out.println("\tclass: " + ae.getClassName());
+        System.out.println("\tmethod: " + ae.getMethodName());
+        System.out.println("\tnodes: " + ae.getNodeCount());
     }
 
     @Override
     public void childrenChanged(@NotNull PsiTreeChangeEvent event) {
-        recordActivity("childrenChanged", event);
+        //recordActivity("childrenChanged", event);
+
+        ActivityEvent ae = new ActivityEvent(event);
+
+        System.out.println(ae.getTimestamp() + ": childAdded");
+        System.out.println("\tfile: " + ae.getSimpleFileName());
+        System.out.println("\tclass: " + ae.getClassName());
+        System.out.println("\tmethod: " + ae.getMethodName());
+        System.out.println("\tnodes: " + ae.getNodeCount());
     }
 
     @Override
     public void childReplaced(@NotNull PsiTreeChangeEvent event) {
-        recordActivity("childReplaced", event);
+        //recordActivity("childReplaced", event);
+
+        ActivityEvent ae = new ActivityEvent(event);
+
+        System.out.println(ae.getTimestamp() + ": childAdded");
+        System.out.println("\tfile: " + ae.getSimpleFileName());
+        System.out.println("\tclass: " + ae.getClassName());
+        System.out.println("\tmethod: " + ae.getMethodName());
+        System.out.println("\tnodes: " + ae.getNodeCount());
     }
 
     @Override
