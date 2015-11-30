@@ -10,6 +10,7 @@ import com.intellij.psi.PsiTreeChangeAdapter;
 import com.intellij.util.messages.MessageBusConnection;
 import edu.oregonstate.cope.intellijListener.listeners.FileEditorListener;
 import edu.oregonstate.cope.intellijListener.listeners.PsiTreeListener;
+import edu.oregonstate.cope.mActivity.mTracker;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Timer;
@@ -46,10 +47,10 @@ public class PluginComponent implements ProjectComponent {
         timer.scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
-                NodeActivityTracker tracker = NodeActivityTracker.getInstance();
+                mTracker tracker = mTracker.getInstance();
                 System.out.println("methods: " + tracker.getAll());
             }
-        }, 1*15*1000, 1*15*1000);
+        }, 15 * 1000, 15 * 1000);
     }
 
     public void disposeComponent() {

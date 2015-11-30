@@ -3,8 +3,8 @@ package edu.oregonstate.cope.intellijListener.listeners;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.*;
 import com.intellij.psi.util.PsiTreeUtil;
-import edu.oregonstate.cope.core.ActivityEvent;
-import edu.oregonstate.cope.core.NodeActivityTracker;
+import edu.oregonstate.cope.mActivity.mEvent;
+import edu.oregonstate.cope.mActivity.mTracker;
 import org.jetbrains.annotations.NotNull;
 
 import java.text.DateFormat;
@@ -20,6 +20,58 @@ import java.util.Date;
  * hooks are provided to PsiManager or PsiTreeChangeAdapter, they must be instantiated in PluginComponent.
  */
 public class PsiTreeListener extends PsiTreeChangeAdapter {
+
+    private mTracker tracker = mTracker.getInstance();
+
+    @Override
+    public void childAdded(@NotNull PsiTreeChangeEvent psiEvent) {
+        mEvent event = new mEvent(psiEvent, "childAdded");
+        tracker.addEvent(event);
+        event.print();
+    }
+
+    @Override
+    public void childMoved(@NotNull PsiTreeChangeEvent psiEvent) {
+        mEvent event = new mEvent(psiEvent, "childMoved");
+        tracker.addEvent(event);
+        event.print();
+    }
+
+    @Override
+    public void childRemoved(@NotNull PsiTreeChangeEvent psiEvent) {
+        mEvent event = new mEvent(psiEvent, "childRemoved");
+        tracker.addEvent(event);
+        event.print();
+    }
+
+    @Override
+    public void childrenChanged(@NotNull PsiTreeChangeEvent psiEvent) {
+        // this event is not needed, return to default functionality
+        super.childrenChanged(psiEvent);
+    }
+
+    @Override
+    public void childReplaced(@NotNull PsiTreeChangeEvent psiEvent) {
+        mEvent event = new mEvent(psiEvent, "childReplaced");
+        tracker.addEvent(event);
+        event.print();
+    }
+
+    @Override
+    public void propertyChanged(@NotNull PsiTreeChangeEvent psiEvent) {
+        PsiElement element = psiEvent.getChild();
+        PsiFile file = psiEvent.getFile();
+        PsiMethod method = PsiTreeUtil.getParentOfType(element, PsiMethod.class, false);
+
+        String fileName = (file == null) ? "" : file.getName();
+        String methodName = (method == null) ? "" : method.getName();
+        String propertyName = (psiEvent.getPropertyName() == null) ? "" : psiEvent.getPropertyName();
+
+        //System.out.println("6. property changed");
+        //System.out.println("   property: " + propertyName);
+        //System.out.println("   method: " + methodName);
+        //System.out.println("   file: " + fileName);
+    }
 
     private void logEvent(@NotNull String eventType, PsiTreeChangeEvent event) {
         PsiElement element = event.getChild();
@@ -43,27 +95,27 @@ public class PsiTreeListener extends PsiTreeChangeAdapter {
         System.out.println("\tmethod: " + methodName);
         System.out.println("\ttext: '" + text + "'");
 
-        if (prevSize >= 1 || nextSize >= 1) {
-            ASTNode[] prevNodes = node.getTreePrev().getChildren(null);
-
-            System.out.println("\tprevNodes: (" + prevSize + ")");
-            for (int i = 0; i < prevNodes.length; i++) {
-                System.out.println("\t" + (i+1) + ": " + prevNodes[i].getElementType().toString());
-            }
-        } else {
-            System.out.println("\tprevNodes: blank");
-        }
-
-        if (nextSize >= 1) {
-            ASTNode[] nextNodes = node.getTreeNext().getChildren(null);
-
-            System.out.println("\tnextNodes: (" + nextSize + ")");
-            for (int i = 0; i < nextNodes.length; i++) {
-                System.out.println("\t" + (i+1) + ": " + nextNodes[i].getElementType().toString());
-            }
-        } else {
-            System.out.println("\tnextNodes: blank");
-        }
+//        if (prevSize >= 1 || nextSize >= 1) {
+//            ASTNode[] prevNodes = node.getTreePrev().getChildren(null);
+//
+//            System.out.println("\tprevNodes: (" + prevSize + ")");
+//            for (int i = 0; i < prevNodes.length; i++) {
+//                System.out.println("\t" + (i+1) + ": " + prevNodes[i].getElementType().toString());
+//            }
+//        } else {
+//            System.out.println("\tprevNodes: blank");
+//        }
+//
+//        if (nextSize >= 1) {
+//            ASTNode[] nextNodes = node.getTreeNext().getChildren(null);
+//
+//            System.out.println("\tnextNodes: (" + nextSize + ")");
+//            for (int i = 0; i < nextNodes.length; i++) {
+//                System.out.println("\t" + (i+1) + ": " + nextNodes[i].getElementType().toString());
+//            }
+//        } else {
+//            System.out.println("\tnextNodes: blank");
+//        }
     }
 
     private void recordActivity(@NotNull String eventType, @NotNull PsiTreeChangeEvent event) {
@@ -77,97 +129,15 @@ public class PsiTreeListener extends PsiTreeChangeAdapter {
 
         System.out.println(dateFormatted + ": " + eventType);
 
-        if (psiElement != null && psiMethod != null) {
-            NodeActivityTracker tracker = NodeActivityTracker.getInstance();
-            ASTNode astNode = psiElement.getNode();
-            int modASTNodes = (astNode.getTreeNext() == null) ? 0 : astNode.getTreeNext().getChildren(null).length;
-            if (modASTNodes <= 1) { modASTNodes += 1; }
-
-            String location = psiClass.getName() + "." + psiMethod.getName();
-            tracker.update(location, modASTNodes);
-            System.out.println("\tmethod activity: " + location + " - " + tracker.get(location));
-        }
-    }
-
-    @Override
-    public void childAdded(@NotNull PsiTreeChangeEvent event) {
-        //recordActivity("childAdded", event);
-
-        ActivityEvent ae = new ActivityEvent(event);
-
-        System.out.println(ae.getTimestamp() + ": childAdded");
-        System.out.println("\tfile: " + ae.getSimpleFileName());
-        System.out.println("\tclass: " + ae.getClassName());
-        System.out.println("\tmethod: " + ae.getMethodName());
-        System.out.println("\tnodes: " + ae.getNodeCount());
-    }
-
-    @Override
-    public void childMoved(@NotNull PsiTreeChangeEvent event) {
-        //recordActivity("childMoved", event);
-
-        ActivityEvent ae = new ActivityEvent(event);
-
-        System.out.println(ae.getTimestamp() + ": childAdded");
-        System.out.println("\tfile: " + ae.getSimpleFileName());
-        System.out.println("\tclass: " + ae.getClassName());
-        System.out.println("\tmethod: " + ae.getMethodName());
-        System.out.println("\tnodes: " + ae.getNodeCount());
-    }
-
-    @Override
-    public void childRemoved(@NotNull PsiTreeChangeEvent event) {
-        //recordActivity("childRemoved", event);
-
-        ActivityEvent ae = new ActivityEvent(event);
-
-        System.out.println(ae.getTimestamp() + ": childAdded");
-        System.out.println("\tfile: " + ae.getSimpleFileName());
-        System.out.println("\tclass: " + ae.getClassName());
-        System.out.println("\tmethod: " + ae.getMethodName());
-        System.out.println("\tnodes: " + ae.getNodeCount());
-    }
-
-    @Override
-    public void childrenChanged(@NotNull PsiTreeChangeEvent event) {
-        //recordActivity("childrenChanged", event);
-
-        ActivityEvent ae = new ActivityEvent(event);
-
-        System.out.println(ae.getTimestamp() + ": childAdded");
-        System.out.println("\tfile: " + ae.getSimpleFileName());
-        System.out.println("\tclass: " + ae.getClassName());
-        System.out.println("\tmethod: " + ae.getMethodName());
-        System.out.println("\tnodes: " + ae.getNodeCount());
-    }
-
-    @Override
-    public void childReplaced(@NotNull PsiTreeChangeEvent event) {
-        //recordActivity("childReplaced", event);
-
-        ActivityEvent ae = new ActivityEvent(event);
-
-        System.out.println(ae.getTimestamp() + ": childAdded");
-        System.out.println("\tfile: " + ae.getSimpleFileName());
-        System.out.println("\tclass: " + ae.getClassName());
-        System.out.println("\tmethod: " + ae.getMethodName());
-        System.out.println("\tnodes: " + ae.getNodeCount());
-    }
-
-    @Override
-    public void propertyChanged(@NotNull PsiTreeChangeEvent event) {
-        PsiElement element = event.getChild();
-        PsiFile file = event.getFile();
-        PsiMethod method = PsiTreeUtil.getParentOfType(element, PsiMethod.class, false);
-
-        String fileName = (file == null) ? "" : file.getName();
-        String methodName = (method == null) ? "" : method.getName();
-        String propertyName = (event.getPropertyName() == null) ? "" : event.getPropertyName();
-
-        //System.out.println("6. property changed");
-        //System.out.println("   property: " + propertyName);
-        //System.out.println("   method: " + methodName);
-        //System.out.println("   file: " + fileName);
+//        if (psiElement != null && psiMethod != null) {
+//            mTracker tracker = mTracker.getInstance();
+//            ASTNode astNode = psiElement.getNode();
+//            int modASTNodes = (astNode.getTreeNext() == null) ? 0 : astNode.getTreeNext().getChildren(null).length;
+//            if (modASTNodes <= 1) { modASTNodes += 1; }
+//
+//            String location = psiClass.getName() + "." + psiMethod.getName();
+//            tracker.update(location, modASTNodes);
+//        }
     }
 
 }
