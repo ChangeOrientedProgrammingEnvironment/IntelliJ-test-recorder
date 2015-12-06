@@ -31,9 +31,7 @@ public class CopeRestAsyncService extends ApplicationComponent.Adapter {
     }
 
     void submitJSON(JSONObject testJSON) {
-        executor.submit((Runnable) () -> {
-            RESTcall(testJSON);
-        });
+        executor.submit((Runnable) () -> RESTcall(testJSON));
     }
 
     @Override
