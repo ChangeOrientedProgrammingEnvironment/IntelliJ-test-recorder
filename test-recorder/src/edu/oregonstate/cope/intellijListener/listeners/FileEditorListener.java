@@ -16,25 +16,25 @@ public class FileEditorListener extends FileEditorManagerAdapter {
     @Override
     public void selectionChanged(@NotNull FileEditorManagerEvent event) {
         if (event.getOldFile() == null && event.getNewFile() == null) {
-            System.out.println("selectionChanged: context switching without old or new file");
+            //System.out.println("selectionChanged: context switching without old or new file");
         } else if (event.getOldFile() == null) {
-            System.out.println("selectionChanged: newly opened file " + event.getNewFile().getName());
+            //System.out.println("selectionChanged: newly opened file " + event.getNewFile().getName());
         } else if (event.getNewFile() == null) {
-            System.out.println("selectionChanged: closed file " + event.getOldFile().getName());
+            //System.out.println("selectionChanged: closed file " + event.getOldFile().getName());
         } else {
             String oldFile = event.getOldFile().getName();
             String newFile = event.getNewFile().getName();
-            System.out.println("selectionChanged: switched from " + oldFile + " to " + newFile);
+            //System.out.println("selectionChanged: switched from " + oldFile + " to " + newFile);
         }
     }
 
     @Override
     public void fileOpened(@NotNull FileEditorManager source, @NotNull VirtualFile file) {
-        System.out.println("fileOpened: " + file.getName());
+        //System.out.println("fileOpened: " + file.getName());
     }
 
     @Override
     public void fileClosed(@NotNull FileEditorManager source, @NotNull VirtualFile file) {
-        System.out.println("fileClosed: " + file.getName());
+        //System.out.println("fileClosed: " + file.getName());
     }
 }

@@ -14,7 +14,6 @@ import edu.oregonstate.cope.mActivity.mTracker;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Timer;
-import java.util.TimerTask;
 
 /**
  * Change-Oriented Programming Environment (COPE) project
@@ -44,13 +43,15 @@ public class PluginComponent implements ProjectComponent {
         System.out.println("adding FileEditorManagerListener");
         msgBus.subscribe(FileEditorManagerListener.FILE_EDITOR_MANAGER, fileListener = new FileEditorListener());
 
-        timer.scheduleAtFixedRate(new TimerTask() {
-            @Override
-            public void run() {
-                mTracker tracker = mTracker.getInstance();
-                System.out.println("methods: " + tracker.getAll());
-            }
-        }, 15 * 1000, 15 * 1000);
+//        timer.scheduleAtFixedRate(new TimerTask() {
+//            @Override
+//            public void run() {
+//                mTracker tracker = mTracker.getInstance();
+//                //System.out.println("methods: " + tracker.getAllMethods());
+//                //System.out.println("events: ");
+//                //tracker.printAllEvents();
+//            }
+//        }, 15 * 1000, 15 * 1000);
     }
 
     public void disposeComponent() {
@@ -79,6 +80,7 @@ public class PluginComponent implements ProjectComponent {
 
     public void projectClosed() {
         if (psiListener != null) {
+            mTracker.getInstance().printAllEvents();
             System.out.println("removing PsiTreeChangeListener");
             psiManager.removePsiTreeChangeListener(psiListener);
         }

@@ -1,18 +1,13 @@
 package edu.oregonstate.cope.mActivity;
 
-import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiClass;
-import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiMethod;
 import com.intellij.psi.PsiTreeChangeEvent;
 import com.intellij.psi.util.PsiTreeUtil;
-import org.apache.commons.io.FilenameUtils;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.util.*;
 
 /**
  * Change-Oriented Programming Environment (COPE) project
@@ -21,100 +16,63 @@ import java.util.Date;
  */
 public class mEvent {
 
-    @NotNull private String psiEventType;
-    @NotNull private final Date timestamp;
-    @Nullable private final ASTNode node;
-    @Nullable private final String simpleFileName;
-    @Nullable private final String qualifiedFileName;
-    @Nullable private final String className;
-    @Nullable private final String methodName;
+    protected final Date timestamp;
+    protected PsiClass myClass = null;
+    protected PsiMethod myMethod = null;
+    protected List<Map.Entry<PsiEvents,PsiTreeChangeEvent>> eventList = new ArrayList<>();
+    protected Integer weight = 0;
 
-    public mEvent(@NotNull PsiTreeChangeEvent event, String eventType) {
-        this(new Date(System.currentTimeMillis()), event, eventType);
+    public mEvent(PsiEvents type, PsiTreeChangeEvent event) throws IllegalArgumentException {
+        if (type != PsiEvents.BEFORE_CHANGE) throw new IllegalArgumentException("type argument is not allowed");
+
+        this.timestamp = new Date(System.currentTimeMillis());
+        this.eventList.add(new AbstractMap.SimpleEntry<>(type, event));
     }
 
-    public mEvent(@NotNull Date timestamp, @NotNull PsiTreeChangeEvent event, @NotNull String eventType) {
-        PsiElement element = event.getChild();
-        PsiClass psiClass = PsiTreeUtil.getParentOfType(element, PsiClass.class, false);
-        PsiMethod psiMethod = PsiTreeUtil.getParentOfType(element, PsiMethod.class, false);
+    public void add(PsiEvents type, PsiTreeChangeEvent event) throws Exception {
 
-        this.psiEventType = eventType;
-        this.timestamp = timestamp;
-        this.node = (element == null) ? null : element.getNode();
-        this.simpleFileName = (event.getFile() == null) ? null : FilenameUtils.removeExtension(event.getFile().getName());
-        this.qualifiedFileName = (event.getFile() == null) ? null : event.getFile().getVirtualFile().getCanonicalPath();
-        this.className = (psiClass == null) ? "" : psiClass.getName();
-        this.methodName = (psiMethod == null) ? "" : psiMethod.getName();
+        PsiClass aClass = PsiTreeUtil.getParentOfType(event.getChild(), PsiClass.class, false);
+        if (aClass != null && this.myClass == null) {
+            this.myClass = aClass;
+        } else if (aClass != null && aClass.getName().equals(myClass.getName())) {
+            throw new Exception("class mismatch: " + aClass.getName() + " -> " + myClass.getName());
+        }
+
+        PsiMethod aMethod = PsiTreeUtil.getParentOfType(event.getChild(), PsiMethod.class, false);
+        if (aMethod != null && this.myMethod == null) {
+            this.myMethod = aMethod;
+        } else if (aMethod != null && aMethod.getName().equals(myMethod.getName())) {
+            throw new Exception("method mismatch: " + aMethod.getName() + " -> " + myMethod.getName());
+        }
+
+        try {
+            String nodeType = event.getElement().getNode().getElementType().toString();
+            if (nodeType.equals("WHITE_SPACE")) return;
+        } catch (NullPointerException e) {
+            // do nothing; since this event doesn't have either a PsiElement, ASTNode, or IElementType
+        }
+
+        eventList.add(new AbstractMap.SimpleEntry<>(type, event));
+        if (type.isCountable()) weight += 1;
     }
 
     public void print() {
-        System.out.println(getTimestamp() + ": " + psiEventType);
-        System.out.println("\tfile: " + simpleFileName);
-        System.out.println("\tclass: " + className);
-        System.out.println("\tmethod: " + methodName);
+        System.out.println(getTimestamp() + " | " + myClass.getName() + "." + myMethod.getName() + " | " + weight);
+    }
 
-        if (node != null) {
-            System.out.println("\ttype: " + node.getElementType().toString());
-            System.out.println("\ttext: '" + node.getText() + "'");
-            System.out.println("\ttextOffset: " + node.getStartOffset());
-
-            if (node.getTreePrev() != null) {
-                System.out.println("\tbeforeTree count: " + node.getTreePrev().getChildren(null).length);
-            } else {
-                System.out.println("\tbeforeTree count: (blank)");
-            }
-            if (node.getTreeNext() != null) {
-                System.out.println("\tafterTree count: " + node.getTreeNext().getChildren(null).length);
-            } else {
-                System.out.println("\tafterTree count: (blank)");
-            }
-            if (node.getTreeParent() != null) {
-                System.out.println("\tparentTree count: " + node.getTreeParent().getChildren(null).length);
-            } else {
-                System.out.println("\tparentTree count: (blank)");
-            }
-        } else {
-            System.out.println("\ttype: (blank)");
-            System.out.println("\ttext: (blank)");
+    public void print_state() {
+        for (Map.Entry<PsiEvents, PsiTreeChangeEvent> aEvent : this.eventList) {
+            System.out.println("\t" + aEvent.getKey().getType());
         }
-
-    }
-
-    @NotNull
-    public String getPsiEventType() {
-        return this.psiEventType;
-    }
-
-    public String getTimestamp() {
-        DateFormat formatter = new SimpleDateFormat("Y/M/d HH:mm:ss:SSS");
-        return this.getTimestamp(formatter);
     }
 
     public String getTimestamp(DateFormat formatter) {
         return formatter.format(this.timestamp);
     }
 
-    @Nullable
-    public ASTNode getNode() { return this.node; }
-
-    @Nullable
-    public String getSimpleFileName() {
-        return this.simpleFileName;
-    }
-
-    @Nullable
-    public String getQualifiedFileName() {
-        return this.qualifiedFileName;
-    }
-
-    @Nullable
-    public String getClassName() {
-        return this.className;
-    }
-
-    @Nullable
-    public String getMethodName() {
-        return this.methodName;
+    public String getTimestamp() {
+        DateFormat formatter = new SimpleDateFormat("Y/M/d HH:mm:ss:SSS");
+        return this.getTimestamp(formatter);
     }
 
 }
